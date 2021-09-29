@@ -1,11 +1,8 @@
-name: Java CI
-
+name: Build the plugin
 on: [push]
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 11
@@ -16,9 +13,4 @@ jobs:
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
       - name: Build with Gradle
-        run: ./gradlew build
-      - name: Publish new version
-        env:
-          GRADLE_PUBLISH_KEY : ${{ secrets.GRADLE_PUBLISH_KEY }}
-          GRADLE_PUBLISH_SECRET : ${{ secrets.GRADLE_PUBLISH_SECRET }}
-        run: ./gradlew setupPluginUploadFromEnvironment publishPlugins
+        run: ./gradlew clean build
