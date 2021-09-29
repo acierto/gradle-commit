@@ -16,7 +16,7 @@ object PluginConstants {
     const val description = "Gradle plugin which helps to commit & push changes to Git repository"
     const val displayName = "Gradle Git Commit Plugin"
     const val groupId = "nl.acierto.gradle.plugins"
-    const val implementationClass = "nl.acierto.GradleCommitPlugin"
+    const val implementationClass = "nl.acierto.gradle.plugins.GradleCommitPlugin"
     const val pluginId = "nl.acierto.gradle-commit"
     const val repositoryUrl = "https://github.com/acierto/gradle-commit"
     var version = "0.0.1-${LocalDateTime.now().format(DateTimeFormatter.ofPattern("Mdd.Hmm"))}"
