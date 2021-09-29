@@ -21,7 +21,7 @@ dependencies {
 }
 
 group = PluginConstants.groupId
-version = PluginConstants.version
+version = PluginConstants.getVersion()
 
 if (!project.hasProperty("local")) {
     gradlePlugin {
@@ -44,7 +44,7 @@ if (!project.hasProperty("local")) {
             "gradleCommit" {
                 id = PluginConstants.pluginId
                 displayName = PluginConstants.displayName
-                version = PluginConstants.version
+                version = version
             }
         }
     }
@@ -55,7 +55,7 @@ if (!project.hasProperty("local")) {
                 create<MavenPublication>("mavenPublish") {
                     groupId = PluginConstants.groupId
                     artifactId = PluginConstants.artifactId
-                    version = PluginConstants.version
+                    version = version
 
                     pom {
                         name.set(PluginConstants.displayName)

@@ -19,5 +19,8 @@ object PluginConstants {
     const val implementationClass = "nl.acierto.gradle.plugins.GradleCommitPlugin"
     const val pluginId = "nl.acierto.gradle-commit"
     const val repositoryUrl = "https://github.com/acierto/gradle-commit"
-    var version = "0.0.1-${LocalDateTime.now().format(DateTimeFormatter.ofPattern("Mdd.Hmm"))}"
+
+    fun getVersion(): String {
+        return "0.0.1-${LocalDateTime.now().format(DateTimeFormatter.ofPattern("Mdd.Hmm"))}"
+    }
 }
