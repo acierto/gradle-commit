@@ -1,10 +1,9 @@
 plugins {
     `java-gradle-plugin`
+    `maven-publish`
     kotlin("jvm") version (Versions.kotlin)
 
     id("idea")
-    id("java-gradle-plugin")
-    id("maven-publish")
     id("com.gradle.plugin-publish") version (PluginVersions.gradle_plugin_publish)
     id("org.jlleitschuh.gradle.ktlint") version (PluginVersions.ktlint)
     id("com.adarshr.test-logger") version (PluginVersions.gradle_test_logger)
@@ -16,34 +15,82 @@ repositories {
 
 dependencies {
     implementation(gradleKotlinDsl())
-    implementation("org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin}")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin}")
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}")
     implementation("org.jetbrains.kotlin:kotlin-allopen:${Versions.kotlin}")
 }
 
-group = properties["groupId"] as String
-version = properties["version"] as String
+group = PluginConstants.groupId
+version = PluginConstants.version
 
-gradlePlugin {
-    plugins {
-        create("gradleCommit") {
-            id = "nl.acierto"
-            implementationClass = "nl.acierto.GradleCommitPlugin"
+if (!project.hasProperty("local")) {
+    gradlePlugin {
+        plugins {
+            create("gradleCommit") {
+                id = PluginConstants.pluginId
+                description = PluginConstants.description
+                displayName = PluginConstants.displayName
+                implementationClass = PluginConstants.implementationClass
+            }
         }
     }
-}
 
-pluginBundle {
-    vcsUrl = "https://github.com/acierto/gradle-commit"
-    website = vcsUrl
-    description = "Gradle plugin which helps to commit & push changes to Git repository"
-    tags = listOf("kotlin", "gradle", "commit")
+    pluginBundle {
+        vcsUrl = PluginConstants.repositoryUrl
+        website = PluginConstants.repositoryUrl
+        tags = listOf("kotlin", "gradle", "commit")
 
-    (plugins) {
-        "gradleCommit" {
-            displayName = "Gradle Git Commit Plugin"
-            version = "0.0.1"
+        (plugins) {
+            "gradleCommit" {
+                id = PluginConstants.pluginId
+                displayName = PluginConstants.displayName
+                version = PluginConstants.version
+            }
+        }
+    }
+
+    tasks.create("setupPluginUploadFromEnvironment") {
+        doLast {
+            val key = System.getenv("GRADLE_PUBLISH_KEY")
+            val secret = System.getenv("GRADLE_PUBLISH_SECRET")
+
+            if (key == null || secret == null) {
+                throw GradleException("gradlePublishKey and/or gradlePublishSecret are not defined environment variables")
+            }
+
+            System.setProperty("gradle.publish.key", key)
+            System.setProperty("gradle.publish.secret", secret)
+        }
+    }
+} else {
+    project.afterEvaluate {
+        publishing {
+            publications {
+                create<MavenPublication>("mavenPublish") {
+                    groupId = PluginConstants.groupId
+                    artifactId = PluginConstants.artifactId
+                    version = PluginConstants.version
+
+                    pom {
+                        name.set(PluginConstants.displayName)
+                        description.set(PluginConstants.description)
+                        inceptionYear.set("2020")
+                        url.set(PluginConstants.repositoryUrl)
+                        developers {
+                            developer {
+                                name.set("Bogdan Nechyporenko")
+                                id.set("acierto")
+                            }
+                        }
+                        licenses {
+                            license {
+                                name.set("MIT")
+                                url.set("https://opensource.org/licenses/MIT")
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

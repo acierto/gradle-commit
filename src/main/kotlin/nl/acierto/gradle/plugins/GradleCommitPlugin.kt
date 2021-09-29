@@ -1,22 +1,33 @@
 package nl.acierto.gradle.plugins
 
 import nl.acierto.gradle.plugins.extensions.GradleCommitExtensions
+import nl.acierto.gradle.plugins.tasks.GradleCommitTask
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.util.GradleVersion
 
+const val EXTENSION_NAME = "gradleCommit"
+const val TASK_NAME = "commitChanges"
+
 open class GradleCommitPlugin : Plugin<Project> {
-    internal lateinit var extension: GradleCommitExtensions
+    override fun apply(project: Project) {
+        project.checkMinimalSupportedGradleVersion()
 
-    override fun apply(target: Project) {
-        target.checkMinimalSupportedGradleVersion()
-
-        extension = target.extensions.create(
-            "gradleCommit",
+        val extension = project.extensions.create(
+            EXTENSION_NAME,
             GradleCommitExtensions::class.java,
-            target
+            project
         )
+
+        project.tasks.register(TASK_NAME, GradleCommitTask::class.java) {
+            it.branchName.set(extension.branchName)
+
+            val propName = "gitMessage"
+            if (project.hasProperty(propName)) {
+                it.message.set(project.property(propName).toString())
+            }
+        }
     }
 
     private fun Project.checkMinimalSupportedGradleVersion() {
@@ -30,5 +41,4 @@ open class GradleCommitPlugin : Plugin<Project> {
     companion object {
         const val LOWEST_SUPPORTED_GRADLE_VERSION = "6.9.1"
     }
-
 }
