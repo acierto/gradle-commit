@@ -21,6 +21,6 @@ object PluginConstants {
     const val repositoryUrl = "https://github.com/acierto/gradle-commit"
 
     fun getVersion(): String {
-        return "0.0.1-${LocalDateTime.now().format(DateTimeFormatter.ofPattern("Mdd.Hmm"))}"
+        return "1.0.0-${LocalDateTime.now().format(DateTimeFormatter.ofPattern("Mdd.Hmm"))}"
     }
 }
