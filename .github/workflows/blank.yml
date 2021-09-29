@@ -18,4 +18,4 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
       - name: Publish new version
-        run: ./gradlew publishPlugins
+        run: ./gradlew setupPluginUploadFromEnvironment publishPlugins
