@@ -1,3 +1,6 @@
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 object Versions {
     const val kotlin = "1.4.20"
 }
@@ -16,5 +19,5 @@ object PluginConstants {
     const val implementationClass = "nl.acierto.GradleCommitPlugin"
     const val pluginId = "nl.acierto.gradle-commit"
     const val repositoryUrl = "https://github.com/acierto/gradle-commit"
-    const val version = "0.0.1"
+    var version = "0.0.1-${LocalDateTime.now().format(DateTimeFormatter.ofPattern("Mdd.Hmm"))}"
 }
