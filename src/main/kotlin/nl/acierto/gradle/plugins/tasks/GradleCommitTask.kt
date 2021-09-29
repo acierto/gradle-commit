@@ -12,18 +12,42 @@ import java.io.InputStreamReader
 abstract class GradleCommitTask : DefaultTask() {
 
     @get:Input
-    @get:Option(option = "message", description = "A message to be printed in the Git message")
+    @get:Option(option = "message", description = "A message to be printed in the Git message.")
     @get:Optional
     abstract val message: Property<String>
 
     @get:Input
-    @get:Option(option = "branchName", description = "A branch name where this message going to be pushed")
+    @get:Option(option = "branchName", description = "A branch name where this message going to be pushed.")
     @get:Optional
     abstract val branchName: Property<String>
 
+    @get:Input
+    @get:Option(
+        option = "fileContent",
+        description = "In case of specified, command `git add 'fileContent'` will be executed."
+    )
+    @get:Optional
+    abstract val fileContent: Property<String>
+
     @TaskAction
     fun run() {
-        val process: Process = Runtime.getRuntime().exec("echo branchName = $branchName, message = $message")
+        executeCommand("git pull")
+        executeCommand("git fetch --tags origin")
+        executeCommand(
+            """
+            if [ -n "$(git status --porcelain)" ]; then
+                git add ${fileContent.get()} && git commit -m "${message.get()}" 
+            fi
+        """.trimMargin()
+        )
+        executeCommand("git merge --no-edit -Xtheirs -s recursive")
+        executeCommand("git push origin ${branchName.get()}")
+    }
+
+    private fun executeCommand(command: String) {
+        project.logger.lifecycle("Executing command: $command")
+
+        val process: Process = Runtime.getRuntime().exec(arrayOf("sh", "-c", command))
 
         val stdInput = BufferedReader(InputStreamReader(process.getInputStream()))
         val stdError = BufferedReader(InputStreamReader(process.getErrorStream()))

@@ -1,6 +1,5 @@
 package nl.acierto.gradle.plugins
 
-import nl.acierto.gradle.plugins.extensions.GradleCommitExtensions
 import nl.acierto.gradle.plugins.tasks.GradleCommitTask
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
@@ -14,18 +13,26 @@ open class GradleCommitPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         project.checkMinimalSupportedGradleVersion()
 
-        val extension = project.extensions.create(
-            EXTENSION_NAME,
-            GradleCommitExtensions::class.java,
-            project
-        )
-
         project.tasks.register(TASK_NAME, GradleCommitTask::class.java) {
-            it.branchName.set(extension.branchName)
+            if (project.hasProperty("gitBranchName")) {
+                it.branchName.set(project.property("gitBranchName").toString())
+            } else {
+                project.logger.lifecycle("Parameter `gitBranchName` is not specified, using default value: master")
+                it.branchName.set("master")
+            }
 
-            val propName = "gitMessage"
-            if (project.hasProperty(propName)) {
-                it.message.set(project.property(propName).toString())
+            if (project.hasProperty("gitMessage")) {
+                it.message.set(project.property("gitMessage").toString())
+            } else {
+                project.logger.lifecycle("Parameter `gitMessage` is not specified, using default value: 'Blank commit message.'")
+                it.message.set("Blank commit message.")
+            }
+
+            if (project.hasProperty("gitFileContent")) {
+                it.fileContent.set(project.property("gitFileContent").toString())
+            } else {
+                project.logger.lifecycle("Parameter `gitFileContent` is not specified, using default value: '-A'")
+                it.fileContent.set("-A")
             }
         }
     }

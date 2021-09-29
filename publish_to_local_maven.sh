@@ -1,1 +1,1 @@
-./gradlew clean build -x test publishToMavenLocal -Plocal=true --stacktrace
+./gradlew clean build -x test publishToMavenLocal -Plocal=true
