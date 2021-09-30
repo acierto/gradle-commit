@@ -17,11 +17,6 @@ abstract class GradleCommitTask : DefaultTask() {
     abstract val message: Property<String>
 
     @get:Input
-    @get:Option(option = "branchName", description = "A branch name where this message going to be pushed.")
-    @get:Optional
-    abstract val branchName: Property<String>
-
-    @get:Input
     @get:Option(
         option = "fileContent",
         description = "In case of specified, command `git add 'fileContent'` will be executed."
@@ -41,7 +36,7 @@ abstract class GradleCommitTask : DefaultTask() {
         """.trimMargin()
         )
         executeCommand("git merge --no-edit -Xtheirs -s recursive")
-        executeCommand("git push origin ${branchName.get()}")
+        executeCommand("git push")
     }
 
     private fun executeCommand(command: String) {

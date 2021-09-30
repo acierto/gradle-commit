@@ -24,7 +24,6 @@ Available parameters
 
 |Name|Type|Default Value|Description|
 | :---: | :---: | :---: | :---: |
-|gitBranchName|Optional|master|A branch name where this message going to be pushed.|
 |gitFileContent|Optional|-A|In case of specified, command `git add 'fileContent'` will be executed.|
 |gitMessage|Optional|Blank commit message.|A message to be printed in the Git message.|
 
@@ -53,5 +52,5 @@ apply plugin: 'nl.acierto.gradle-commit'
 
 ```
 
-Run command like this to test it: `./gradlew commitChanges -PgitMessage="my message" -PgitFileContent="docs/*" -PgitBranchName="master"`
+Run command like this to test it: `./gradlew commitChanges -PgitMessage="my message" -PgitFileContent="docs/*"`
 

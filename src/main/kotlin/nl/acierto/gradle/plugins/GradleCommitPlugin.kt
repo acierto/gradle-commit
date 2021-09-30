@@ -13,13 +13,6 @@ open class GradleCommitPlugin : Plugin<Project> {
         project.checkMinimalSupportedGradleVersion()
 
         project.tasks.register(TASK_NAME, GradleCommitTask::class.java) {
-            if (project.hasProperty("gitBranchName")) {
-                it.branchName.set(project.property("gitBranchName").toString())
-            } else {
-                project.logger.lifecycle("Parameter `gitBranchName` is not specified, using default value: master")
-                it.branchName.set("master")
-            }
-
             if (project.hasProperty("gitMessage")) {
                 it.message.set(project.property("gitMessage").toString())
             } else {
