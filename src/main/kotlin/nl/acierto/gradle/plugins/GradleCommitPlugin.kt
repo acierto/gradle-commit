@@ -6,7 +6,6 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.util.GradleVersion
 
-const val EXTENSION_NAME = "gradleCommit"
 const val TASK_NAME = "commitChanges"
 
 open class GradleCommitPlugin : Plugin<Project> {
